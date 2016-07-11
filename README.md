@@ -4,6 +4,7 @@ All transaction info lies within the graphing module used here: NetworkX. Some o
 For this reason and more, there is much room for optimization on this code. Attempts were made to scale the data for visualization purposes, which may need further tweaking for even larger datasets. Could not see matplotlib's interactive mode on my machine, but with the appropriate backend, further optimization of the slow plotting, using backgrounds or animation modules, is possible.
 --------- EDIT ----------
 Just found out that plotting is not necessary for this exercise, so uploading a version of the above which outputs no plots, while still utilizing the NetworkX module's methods. This speeds up the script 275-fold.
+Re-edit : also uploaded a noplot version not based on NetworkX. Slightly faster, but shows slightly different output medians than previous version, may be a bug.
 
 
 # Table of Contents

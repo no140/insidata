@@ -2,6 +2,8 @@ Language: Python3
 This is a simple script that attempts to follow guidelines (below), by reading the transaction input file, line by line, adding/subtracting appropriate transactions to the plot, and listing a median degree number to the output file.
 All transaction info lies within the graphing module used here: NetworkX. Some other, supposedly faster,  graphing modules were tried, but either did not contain clean methods for holding and graphing the data as necessitated by this exercise, or had problems running on my machine. Unfortunately NetworkX doesn't seem to have a way to draw one edge at a time, meaning that each plot draw is a full redraw, and causing the program to more than double the time it takes to complete a dataset. (a difference of 160 seconds vs. 15-60 seconds, depending on detail within plot, on dataset of 1700 lines)
 For this reason and more, there is much room for optimization on this code. Attempts were made to scale the data for visualization purposes, which may need further tweaking for even larger datasets. Could not see matplotlib's interactive mode on my machine, but with the appropriate backend, further optimization of the slow plotting, using backgrounds or animation modules, is possible.
+--------- EDIT ----------
+Just found out that plotting is not necessary for this exercise, so uploading a version of the above which outputs no plots, while still utilizing the NetworkX module's methods. This speeds up the script 275-fold.
 
 
 # Table of Contents
