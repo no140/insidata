@@ -10,7 +10,7 @@ import sys
 
 
 #output file
-f = open('./venmo_output/output.txt', 'w') #./venmo_output/output.txt
+f = open('../venmo_output/output_testing.txt', 'w') #./venmo_output/output.txt
 
 """
 - each line is a dict with timestamp, target, and actor (no pandas to hold all data; list/dict is only as big as amount of data within 60 seconds)
@@ -31,11 +31,39 @@ duplicate = False
 #	dd[actor].append(target)
 #	dd[target].append(actor)
 
+def check_duplicate(target, actor):
+	for u,v,datatime in list(mainlist):
+		if u == target and v == actor:
+			#remove old
+			mainlist.remove((u,v,datatime))
+			#remove_fr_main((u,v,datatime))		#attempt to optimize
+			duplicate = True
+			print('duplicated')
+			return duplicate
+	duplicate = False
+	return duplicate
+
+def check_times(max_time):
+	for u,v,datatime in list(mainlist):
+		timediff = datatime - max_time
+		if timediff.total_seconds() < -60:
+			dd[u].remove(v)		#because dd values are in a list
+			dd[v].remove(u)
+			#must also remove from mainlist
+			#mainlist.remove((u,v,datatime))
+			remove_fr_main((u,v,datatime))
+			print('removed an edge!!!!!!')
+			if len(dd.get(u)) == 0:
+				dd.pop(u)
+				print('removed node')
+			if len(dd.get(v)) == 0:
+				dd.pop(v)
+				print('removed node')
 #-----------------
 
 #print('starting...')
 start_time=time.time()
-with open("./venmo_input/venmo-trans.txt", 'r') as ven:
+with open("../venmo_input/venmo-trans.txt", 'r') as ven:
 
 	append_to_main = mainlist.append		#attempt to optimize
 	remove_fr_main = mainlist.remove		#attempt to optimize
@@ -66,12 +94,13 @@ with open("./venmo_input/venmo-trans.txt", 'r') as ven:
 			
 		#check if DUPLICATE?
 		duplicate = False
-		for u,v,datatime in list(mainlist):
+		duplicate = check_duplicate(d["target"], d["actor"])
+		'''for u,v,datatime in list(mainlist):
 			if u == d["target"] and v == d["actor"]:
 				#remove old
 				#mainlist.remove((u,v,datatime))
 				remove_fr_main((u,v,datatime))		#attempt to optimize
-				duplicate = True
+				duplicate = True'''
 
 		timedelta =  new_time - max_time
 		#check TIME in WINDOW?
@@ -80,7 +109,8 @@ with open("./venmo_input/venmo-trans.txt", 'r') as ven:
 			max_time = new_time
 			#check to REMOVE OLD entries
 			#t0=time.time()
-			for u,v,datatime in list(mainlist):
+			check_times(max_time)
+			'''for u,v,datatime in list(mainlist):
 				timediff = datatime - max_time
 				if timediff.total_seconds() < -60:
 					dd[u].remove(v)		#because dd values are in a list
@@ -96,7 +126,7 @@ with open("./venmo_input/venmo-trans.txt", 'r') as ven:
 						dd.pop(v)
 						#print('removed node')
 					#continue
-				#else: print('still in time window')
+				#else: print('still in time window')'''
 			#t1=time.time()
 			#print('remove old entries time: ',t1-t0)			
 			
@@ -111,6 +141,7 @@ with open("./venmo_input/venmo-trans.txt", 'r') as ven:
 				degrees=[len(dd[item]) for item in dd.keys()]
 				f.write(str("%.2f" % np.median(degrees))+'\n')
 			else:	#just write last median
+				print('just writing last median')
 				f.write(str("%.2f" % np.median(degrees))+'\n')
 
 		elif timedelta.total_seconds() < -60: 
@@ -134,6 +165,7 @@ with open("./venmo_input/venmo-trans.txt", 'r') as ven:
 				f.write(str("%.2f" % np.median(degrees))+'\n')
 				#print('median degree write time: ',time.time()-t0)
 			else:	#just write last median
+				print('just writing last median')
 				f.write(str("%.2f" % np.median(degrees))+'\n')
 		#print(degrees)	
 
